@@ -1,0 +1,17 @@
+{
+    "name": "srimaln91/google-bucket-php-wrapper",
+    "description": "A PHP wrapper for Google bucket API functions",
+    "authors": [
+        {
+            "name": "Srimaln91",
+            "email": "srimal@3cs.lk"
+        }
+    ],
+    "require": {
+        "google/cloud-storage": "^1.5",
+        "symfony/filesystem": "^4.1"
+    },
+    "autoload": {
+        "psr-4": {"Gbucket\\": "src"}
+   }
+}
