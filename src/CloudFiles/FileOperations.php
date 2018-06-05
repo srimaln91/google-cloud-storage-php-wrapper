@@ -2,6 +2,10 @@
 
 namespace Gbucket\CloudFiles;
 
+use Google\Cloud\Storage\StorageObject;
+use Gbucket\Authenticate\GoogleAuthenticate;
+use Gbucket\FS\FileSystem;
+
 class FileOperations
 {
     /**
@@ -9,27 +13,56 @@ class FileOperations
      */
     private $Gbucket;
 
+    private $bucketName;
+
+    protected $authFileContent;
+
     /**
-     * Class cinstructor
-     * @param $gBucket Google cloud bucket object
+     * Class constructor
+     * @param Google\Cloud\Storage\Bucket $gBucket
      */
-    public function __construct($gBucket)
+    public function __construct($bucketName, $authFile)
     {
-        $this->Gbucket = $gBucket;
+        $this->bucketName = $bucketName;
+        $this->authFileContent = FileSystem::getContents($authFile);
+        $this->Gbucket = $this->initializeApi();
     }
 
-    public function uploadFile($filePath, $publicAccess = true)
+    private function initializeApi()
+    {
+        $auth = new GoogleAuthenticate($this->authFileContent);
+        $storage = $auth->authenticate();
+        $bucket = $storage->bucket($this->bucketName);
+
+        return $bucket;
+    }
+
+    /**
+     * Upload an asset
+     *
+     * @param string $filename
+     * @param string $contents
+     * @param boolean $publicAccess
+     * @return Google\Cloud\Storage\StorageObject
+     */
+    public function uploadFile($filename, $contents, $publicAccess = true)
     {
 
         $options = [];
         if ($publicAccess == true) {
             $options['predefinedAcl'] = 'publicRead';
         }
-        try {
-            $this->Gbucket->upload(fopen($filePath, 'r'), $options);
-            return true;
-        } catch (Exception $e) {
-            die($e->getMessage());
+
+        if ($contents == false) {
+            throw new \Exception('Empty file contents');
+            return false;
         }
+        if ($filename == false) {
+            throw new \Exception("Empty filename");
+            return false;
+        }
+
+        $options['name'] = $filename;
+        return $this->Gbucket->upload($contents, $options);
     }
 }

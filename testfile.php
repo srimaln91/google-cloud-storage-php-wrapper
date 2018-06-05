@@ -2,16 +2,14 @@
 
 require(__DIR__. '/vendor/autoload.php');
 
-use Gbucket\Authenticate\GoogleAuthenticate;
 use Gbucket\FS\FileSystem;
 use Gbucket\CloudFiles\FileOperations;
 
-$authFile = FileSystem::getContents(__DIR__ . '/temp/authfile.json');
+$authFile = __DIR__ . '/temp/authfile.json';
+$bucketName = 'static-dpl.3cs.technology';
 
-$auth = new GoogleAuthenticate($authFile);
-$storage = $auth->authenticate();
+$uploadFileName = '';
+$uploadFilePath = __DIR__ . '/temp/screenshot.png';
 
-$bucket = $storage->bucket('static-dpl.3cs.technology');
-
-$operations = new FileOperations($bucket);
-$operations->uploadFile(__DIR__ . '/temp/test.txt');
+$gBucket = new FileOperations($bucketName, $authFile);
+$gBucket->uploadFile($uploadFileName, FileSystem::getContents($uploadFilePath));

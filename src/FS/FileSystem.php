@@ -3,26 +3,30 @@
 namespace Gbucket\FS;
 
 use Symfony\Component\Filesystem\Filesystem as BaseFilesystem;
+use Gbucket\Exceptions\FileNotFoundException;
 
 class Filesystem extends BaseFilesystem
 {
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     /**
      * @param string $filename
      * @return mixed
      */
     public static function getContents($filepath)
     {
-        return file_get_contents($filepath);
-    }
+        if (!file_exists($filepath)) {
+            throw new FileNotFoundException("Unable to find the specified file");
+        }
+        $contents = file_get_contents($filepath);
 
-    /**
-     * @param string $filename
-     * @param string $data
-     * @param int $flags
-     * @return int
-     */
-    public static function putContents($filepath, $data, $flags = FILE_APPEND)
-    {
-        return file_put_contents($filepath, $data, $flags);
+        if ($contents == false) {
+            throw new FilePermissionErrorException("No permissions to read the file");
+        }
+
+        return $contents;
     }
 }
