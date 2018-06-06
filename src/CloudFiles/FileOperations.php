@@ -5,6 +5,7 @@ namespace Gbucket\CloudFiles;
 use Google\Cloud\Storage\StorageObject;
 use Gbucket\Authenticate\GoogleAuthenticate;
 use Gbucket\FS\FileSystem;
+use Gbucket\Exceptions\ObjectNotExistException;
 
 class FileOperations
 {
@@ -64,5 +65,22 @@ class FileOperations
 
         $options['name'] = $filename;
         return $this->Gbucket->upload($contents, $options);
+    }
+
+    /**
+     * Delete an object from google storage
+     * @param string $filename
+     */
+    public function deleteFile($filename)
+    {
+        $object = $this->Gbucket->object($filename);
+
+        if (!$object->exists()) {
+            throw new ObjectNotExistException("Object not exist on bucket");
+            return false;
+        }
+
+        $object->delete();
+
     }
 }
