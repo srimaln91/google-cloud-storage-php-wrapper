@@ -2,10 +2,9 @@
 
 namespace Gbucket\FS;
 
-use Symfony\Component\Filesystem\Filesystem as BaseFilesystem;
 use Gbucket\Exceptions\FileNotFoundException;
 
-class Filesystem extends BaseFilesystem
+class Filesystem
 {
     public function __construct()
     {
