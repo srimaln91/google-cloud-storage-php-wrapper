@@ -5,7 +5,7 @@ A PHP client library to handle google cloud storage files.
 ## Getting Started
 
 Please use composer to install this
-```
+```bash
 composer require srimaln91/google-bucket-php-wrapper
 ```
 
@@ -13,7 +13,7 @@ composer require srimaln91/google-bucket-php-wrapper
 
 Please find below a sample PHP snipprt
 
-```
+```php
 <?php
 
 require __DIR__ . '/vendor/autoload.php';
